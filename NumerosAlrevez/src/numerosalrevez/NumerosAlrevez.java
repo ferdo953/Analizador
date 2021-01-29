@@ -22,7 +22,7 @@ public class NumerosAlrevez {
             System.out.println("Digita un numero de 3 digitos entre el rango -2^31 a 2^31");
             numero = f.nextLine();
             if(Double.parseDouble(numero)>=-2147483648  && Double.parseDouble(numero)<=2147483647){
-                 
+                
             }else{
                 System.out.println("0");
                 numero="";
