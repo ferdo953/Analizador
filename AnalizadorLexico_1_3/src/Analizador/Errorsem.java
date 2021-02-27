@@ -19,7 +19,7 @@ public class Errorsem {
     String[] datos3 = new String[2];
     Boolean verdad=true;
     String a,j;
-    String TD2 = "(@ABIO7|8num|Hack%)";
+    String TD2 = "(&Flotante&|&Doble&|&Largo&)";
     int b,p,h,k=0,u=0,errsem,l,as;
     String[] datos2 = new String[4];
   

@@ -1,17 +1,14 @@
 package Analizador;
-import java.awt.Frame;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
-import java.util.regex.Pattern;
 import javax.swing.table.DefaultTableModel;
-import java.awt.Color;
 
 
 public class Proyecto extends javax.swing.JFrame {
-    String ruta = "C:/Users/Public/archivo.txt";
+    String ruta = "archivoTokens.txt";
     File archivo = new File(ruta);
     BufferedWriter bw;
     String ruta2 = "C:/Users/Public/archivoOpti.txt";
@@ -20,8 +17,8 @@ public class Proyecto extends javax.swing.JFrame {
     
     String expresion;
     String Lenguaje="";
-    String TD = "(@ABIO7|8num|Hack%)";
-    String ID = "[A-Z]([A-Za-z]|_|-|(\\d))*(&)*#";
+    String TD = "(&Flotante&|&Doble&|&Largo&)";
+    String ID = "@ER(\\d)*#";
     String OA = "(\\+|\\-|\\*|\\/)";
     String AS = "(\\=)"; 
     String SEP = "(;|,)";
@@ -74,6 +71,7 @@ public class Proyecto extends javax.swing.JFrame {
         jLabel5.setText("jLabel5");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Analizando");
         setBackground(new java.awt.Color(255, 51, 51));
 
         jScrollPane3.setBackground(new java.awt.Color(0, 0, 0));
@@ -305,8 +303,6 @@ public class Proyecto extends javax.swing.JFrame {
                                     aoa2++;
                                 }else if(verdad==guardar.get(j).matches(AS)){
                                     aas2++;
-                                }else if(verdad==guardar.get(j).matches(SEP)){
-                                    asep2++;
                                 }else if(verdad==guardar.get(j).matches(CNE)){
                                     acne2++;
                                 }else if(verdad==guardar.get(j).matches(CNPF)){
@@ -353,11 +349,11 @@ public class Proyecto extends javax.swing.JFrame {
 
                         if(verdad==a.matches(TD)){
                             if(cambiar==0){
-                                bw.write("TIDA"+atd2+" ");
+                                bw.write("TD"+atd2+" ");
                             }else{
                                 datos[1]=a;
-                                datos[0]="TIDA"+atd;
-                                bw.write("TIDA"+atd+" ");
+                                datos[0]="TD"+atd;
+                                bw.write("TD"+atd+" ");
                                 atd++;
                                 guardar.add(datos[1]);
                                 model.addRow(datos);
@@ -367,23 +363,7 @@ public class Proyecto extends javax.swing.JFrame {
                             r=0;
 
                         }else if(verdad==a.matches(ID)){
-                            if(a.length()>8){
-                                datos[0]="ERLXIDEN"+aid;
-                                datos[1]=a;
-                                guardar.add(datos[1]);
-                                model.addRow(datos);
-                                tablavts.setModel(model);
-                                auxiliando++;
-                                datos2[1]=a;
-                                datos2[0]="ERLXIDEN"+aid;
-                                bw.write("ERLXIDEN"+aid+" ");
-                                datos2[2]=String.valueOf(p);
-                                datos2[3]="Incorrecto el identificador";
-                                model2.addRow(datos2);
-                                tablavts2.setModel(model2);
-                                aid++;
-                            }else{
-
+                            
                                 Errorsem f = new Errorsem(guardar3,a);
                                 f.vardeclaradas();
                                 datos3[1]=f.datos3[1];
@@ -394,12 +374,12 @@ public class Proyecto extends javax.swing.JFrame {
                                 k=d.k;
 
                                 if(b==5 && k==0 && guardar3.size()>2){
-                                    datos2[1]=a;
+                                    /*datos2[1]=a;
                                     datos2[0]="ERRSEM"+errsem;
                                     datos2[2]=String.valueOf(p);
                                     datos2[3]="Variable no definida";
                                     model2.addRow(datos2);
-                                    tablavts2.setModel(model2);
+                                    tablavts2.setModel(model2); */
                                     guardar4.add(a+p);
                                     h++;errsem++;
                                 }else if(b==0){
@@ -412,8 +392,8 @@ public class Proyecto extends javax.swing.JFrame {
                                        /* datos3[0]=a;
                                         model3.addRow(datos3);
                                         tablavtss.setModel(model3);
-                                        guardar5.add(a);
-                                        l++; */
+                                        */guardar5.add(a);
+                                        /*l++; */
                                     }
 
                                     Errorsem N = new Errorsem(guardar2,guardar4,guardar7,p,a,v,b);
@@ -496,11 +476,11 @@ public class Proyecto extends javax.swing.JFrame {
                                 }
 
                                 if(cambiar==0){
-                                    bw.write("IDEN"+aid2+" ");
+                                    bw.write("VAR"+aid2+" ");
                                 }else{
                                     datos[1]=a;
-                                    datos[0]="IDEN"+aid;
-                                    bw.write("IDEN"+aid+" ");
+                                    datos[0]="VAR"+aid;
+                                    bw.write("VAR"+aid+" ");
                                     aid++;
                                     guardar.add(datos[1]);
                                     model.addRow(datos);
@@ -509,7 +489,7 @@ public class Proyecto extends javax.swing.JFrame {
                                     datos[2]="";
                                 }
                                 datos3[1]=""; guardar6.clear(); r=0;  oa=5;
-                            }
+                            
                         }else if(verdad==a.matches(OA)){
                             String j=guardar3.get(guardar3.size()-2);
                             Errorsem o = new Errorsem(guardar3,guardar6,j);
@@ -526,15 +506,28 @@ public class Proyecto extends javax.swing.JFrame {
                                             oa=0;
                                             break;
                                         }else{
+                                            System.out.println(guardar3.get(i));
                                             if(guardar3.get(i-1).equals(",")){
                                                 if(verdad==guardar3.get(i-3).matches(TD)){
-                                                    System.out.println("hika");
                                                     oa=0;
                                                     break;
                                                 }else{
                                                     oa=5;
                                                 }
-                                            }
+                                            }else{
+                                                    oa=5;
+                                                    datos2[1]=guardar7.get(1);
+                                                    datos2[0]="ERRSEM"+errsem;
+                                                    datos2[2]=String.valueOf(p);
+                                                    datos2[3]="Incompatibilidad de tipos";
+                                                    model2.addRow(datos2);
+                                                    tablavts2.setModel(model2);
+                                                    errsem++;
+                                                    as=5;
+                                                    guardar4.add(guardar7.get(1)+p);
+                                                    v++;
+                                                    guardar10.add(String.valueOf(p));
+                                                }
 
                                         }
                                     }else{
@@ -543,11 +536,11 @@ public class Proyecto extends javax.swing.JFrame {
 
                                 }}
                                 if(cambiar==0){
-                                    bw.write("OPAR"+aoa2+" ");
+                                    bw.write("OA"+aoa2+" ");
                                 }else{
                                     datos[1]=a;
-                                    datos[0]="OPAR"+aoa;
-                                    bw.write("OPAR"+aoa+" ");
+                                    datos[0]="OA"+aoa;
+                                    bw.write("OA"+aoa+" ");
                                     aoa++;
                                     guardar.add(datos[1]);
                                     model.addRow(datos);
@@ -563,11 +556,11 @@ public class Proyecto extends javax.swing.JFrame {
                                 guardar7=o.guardar7;
 
                                 if(cambiar==0){
-                                    bw.write("OPAS"+" ");
+                                    bw.write("OAS"+" ");
                                 }else{
                                     datos[1]=a;
-                                    datos[0]="OPAS";
-                                    bw.write("OPAS"+" ");
+                                    datos[0]="OAS";
+                                    bw.write("OAS"+" ");
                                     guardar.add(datos[1]);
                                     model.addRow(datos);
                                     tablavts.setModel(model);
@@ -627,11 +620,11 @@ public class Proyecto extends javax.swing.JFrame {
                                 guardar6.clear();
 
                                 if(cambiar==0){
-                                    bw.write("NUEN"+acne2+" ");
+                                    bw.write("NE"+acne2+" ");
                                 }else{
                                     datos[1]=a;
-                                    datos[0]="NUEN"+acne;
-                                    bw.write("NUEN"+acne+" ");
+                                    datos[0]="NE"+acne;
+                                    bw.write("NE"+acne+" ");
                                     acne++;
                                     guardar.add(datos[1]);
                                     model.addRow(datos);
@@ -641,11 +634,11 @@ public class Proyecto extends javax.swing.JFrame {
                                 r=0;
                             }else if(verdad==a.matches(CNPF)){
                                 if(cambiar==0){
-                                    bw.write("NUPD"+acnpf2+" ");
+                                    bw.write("NPD"+acnpf2+" ");
                                 }else{
                                     datos[1]=a;
-                                    datos[0]="NUPD"+acnpf;
-                                    bw.write("NUPD"+acnpf+" ");
+                                    datos[0]="NPD"+acnpf;
+                                    bw.write("NPD"+acnpf+" ");
                                     acnpf++;
                                     guardar.add(datos[1]);
                                     model.addRow(datos);
@@ -661,11 +654,11 @@ public class Proyecto extends javax.swing.JFrame {
                                     lolito=4;
                                 }
                                 if(cambiar==0){
-                                    bw.write("SEPA"+adel2+" ");
+                                    bw.write("SEP"+adel2+" ");
                                 }else{
                                     datos[1]=a;
-                                    datos[0]="SEPA"+adel;
-                                    bw.write("SEPA"+adel+" ");
+                                    datos[0]="SEP"+adel;
+                                    bw.write("SEP"+adel+" ");
                                     adel++;
                                     guardar.add(datos[1]);
                                     model.addRow(datos);
@@ -676,10 +669,10 @@ public class Proyecto extends javax.swing.JFrame {
                             }else if((verdad==a.matches(IGN)|(verdad==a.matches(IGNM)))){
                                 if(a.equals("while") && a.matches(IGN)){
                                     if(cambiar==0){
-                                        bw.write("WHLE"+whle2+" ");
+                                        bw.write("WH"+whle2+" ");
                                     }else{
-                                        datos[0]="WHLE"+whle;
-                                        bw.write("WHLE"+whle+" ");
+                                        datos[0]="WH"+whle;
+                                        bw.write("WH"+whle+" ");
                                         whle++;
                                         datos[1]=a;
                                         guardar.add(datos[1]);
@@ -687,12 +680,11 @@ public class Proyecto extends javax.swing.JFrame {
                                         tablavts.setModel(model);
                                     }
                                 }else if(a.matches(IGNM)){
-                                    System.out.println("contar");
                                     if(cambiar==0){
-                                        bw.write("OPLB"+oplb2+" ");
+                                        bw.write("OL"+oplb2+" ");
                                     }else{
-                                        datos[0]="OPLB"+oplb;
-                                        bw.write("OPLB"+oplb+" ");
+                                        datos[0]="OL"+oplb;
+                                        bw.write("OL"+oplb+" ");
                                         datos[1]=a;
                                         guardar.add(datos[1]);
                                         model.addRow(datos);
@@ -701,10 +693,10 @@ public class Proyecto extends javax.swing.JFrame {
                                     }
                                 }else if(a.matches(IGN)){
                                     if(cambiar==0){
-                                        bw.write("OPRE"+opre2+" ");
+                                        bw.write("OR"+opre2+" ");
                                     }else{
-                                        datos[0]="OPRE" + opre;
-                                        bw.write("OPRE" + opre+" ");
+                                        datos[0]="OR" + opre;
+                                        bw.write("OR" + opre+" ");
                                         datos[1]=a;
                                         guardar.add(datos[1]);
                                         model.addRow(datos);
