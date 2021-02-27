@@ -11,7 +11,7 @@ import java.awt.Color;
 
 
 public class Proyecto extends javax.swing.JFrame {
-    String ruta = "C:/Users/Public/archivo2.txt";
+    String ruta = "C:/Users/Public/archivo.txt";
     File archivo = new File(ruta);
     BufferedWriter bw;
     String ruta2 = "C:/Users/Public/archivoOpti.txt";
@@ -20,19 +20,18 @@ public class Proyecto extends javax.swing.JFrame {
     
     String expresion;
     String Lenguaje="";
-    String TD = "(void|double|string|int|float|char|short|long|boolean)";
-    String TD2 = "(double|string|int|float|char|short|long|boolean)";
-    String ID = "[A-Z]([A-Za-z]|_|-|(\\d))*";
+    String TD = "(@ABIO7|8num|Hack%)";
+    String ID = "[A-Z]([A-Za-z]|_|-|(\\d))*(&)*#";
     String OA = "(\\+|\\-|\\*|\\/)";
     String AS = "(\\=)"; 
     String SEP = "(;|,)";
     String CNE = "((\\d)+)";
     String CNPF = "((\\d)+(\\.)(\\d)+)";
-    String DEL ="(\\(|\\)|\\{|\\})";
+    String DEL ="(\\(|\\)|\\{|\\}|;|,)";
     String regexp = "(void|double|string|int|float|char|short|long|boolean)[A-Z]([A-Za-z]|_|-|(\\d))+[//(][//)]";
     
     //"[A-Z][A-Za-z|_|(\\d)]*(\\s)(\\=)(\\s)(([(A-Z)(\\d)*(\\s)]*|[(\\d)+(\\.d+)*(\\s)]*)(\\+|\\-|\\*|\\/)*)*";
-    String ERLXTD="([a]|[e]|[g]|[h]|[j]|[k]|[m-r]|[t]|[u]|[w-z]|[@]|[#]|[\"]|[.]|[_])*([v]|[d]|[s]|[i]|[f]|[c]|[s]|[l]|[b])([A-Z]|[a-z]|_|-|(\\d)|.|\\(|\\)|\\{|\\}|#|\\=|\\s|\\*|\\-|\\_|\\+|\\/)*";
+    String ERLXTD="([a]|[e]|[g]|[h]|[j]|[k]|[m-r]|[t]|[u]|[w-z]|[#]|[\"]|[.]|[_])*([@]|[8]|[h])([A-Z]|[a-z]|_|-|(\\d)|.|\\(|\\)|\\{|\\}|#|\\=|\\s|\\*|\\-|\\_|\\+|\\/)*";
     
     String ERLXID="([a]|[e]|[g]|[h]|[j]|[k]|[m-r]|[t]|[u]|[w-z]|[@]|[#]|[\"]|[.]|[_])*[A-Z](@|λ|\\[|\\]|(|)|\\+|\\-|\\*|\\/|\\;|\\“|\\{|\\}|#|\\=|\\.)*([A-Z]|[a-z]|_|-|(\\d)|.|\\(|\\)|\\{|\\}|#|\\=|\\s|\\*|\\-|\\_|\\+|\\/|\\[|\\]|@)*"; 
     String ERLXOA="([a]|[e]|[g]|[h]|[j]|[k]|[m-r]|[t]|[u]|[w-z]|[@]|[#]|[\"]|[.]|[_])*(\\+|\\-|\\*|\\/)([A-Z]|[a-z]|_|-|(\\d)|.|\\(|\\)|\\{|\\}|#|\\=|\\s|\\*|\\-|\\_|\\+|\\/)*";
@@ -42,7 +41,7 @@ public class Proyecto extends javax.swing.JFrame {
     String ERLXCNPF="([a]|[e]|[g]|[h]|[j]|[k]|[m-r]|[t]|[u]|[w-z]|[@]|[#]|[\"]|[.]|[_])*[0-9]+([A-Z]|[a-z]|_|-|[0-9]|.|\\(|\\)|\\{|\\}|#|\\=|\\s|\\*|\\-|\\_|\\+|\\/)*\\.([A-Z]|[a-z]|_|-|[0-9]|.|\\(|\\)|\\{|\\}|#|\\=|\\s|\\*|\\-|\\_|\\+|\\/)*[0-9]+([A-Z]|[a-z]|_|-|[0-9]|.|\\(|\\)|\\{|\\}|#|\\=|\\s|\\*|\\-|\\_|\\+|\\/)*";
     String ERLXDEL="([a]|[e]|[g]|[h]|[j]|[k]|[m-r]|[t]|[u]|[w-z]|[@]|[#]|[\"]|[.]|[_])*(\\(|\\)|\\{|\\})([A-Z]|[a-z]|_|-|(\\d)|.|\\(|\\)|\\{|\\}|#|\\=|\\s|\\*|\\-|\\_|\\+|\\/)*";
      String IGN = "while|==|!=|<=|>=|<|>";
-     String IGNM ="&&|\\|";
+     String IGNM ="&&|\\|\\|";
     
     public Proyecto() {
         
@@ -204,7 +203,8 @@ public class Proyecto extends javax.swing.JFrame {
         this.expresion = txt1.getText();
         Boolean verdad=true;
         int auxiliando=0,p=1,r=1,k=0,h=0,l=0,u=0,B=0,oa=5,as=5, v=0;
-        int aid=1,aoa=1,aas=1,asep=1,acne=1,acnpf=1,adel=1,atd=1,errsem=1,b=0,suma=0,suma2=0;
+        
+        int lex=1,aid=1,aoa=1,aas=1,asep=1,acne=1,acnpf=1,adel=1,atd=1,errsem=1,b=0,suma=0,suma2=0,unm=0,opre=1,oplb=1,whle=1;
         
             DefaultTableModel model = new DefaultTableModel();
             DefaultTableModel model2 = new DefaultTableModel();
@@ -219,7 +219,7 @@ public class Proyecto extends javax.swing.JFrame {
             model2.addColumn("Descripcion");
             tablavts2.setModel(model2);
             
-            model3.addColumn("Token");
+            model3.addColumn("Lexema");
             model3.addColumn("Tipo");           
             tablavtss.setModel(model3);
             
@@ -231,7 +231,7 @@ public class Proyecto extends javax.swing.JFrame {
             ArrayList<String> guardar5 = new ArrayList<String>(); //los declarados para que no se repitan en su tabla
             ArrayList<String> guardar6 = new ArrayList<String>(); //oa
             ArrayList<String> guardar7 = new ArrayList<String>(); //as
-            
+            ArrayList<String> guardar10 = new ArrayList<String>();
             
             String[] datos2 = new String[4]; //segunda tabla de declarados
             String[] datos3 = new String[2]; //errores
@@ -242,6 +242,8 @@ public class Proyecto extends javax.swing.JFrame {
                 r=1;    
                 if(tokens.hasMoreTokens()){
                    String a=tokens.nextToken();
+                   
+                   
                    if(a.equals("\n") || a.equals("\t") || a.equals(" ")){
 
                     }else{
@@ -252,16 +254,13 @@ public class Proyecto extends javax.swing.JFrame {
                        
                        if(guardar3.size()>2){
                            if(!guardar3.get(guardar3.size()-2).matches(OA)){
-                          
                             guardar6.clear(); 
-                            
-                           
-                       }
+                           }
                        }
                        
                    }
                    if(!a.equals(" ") && !a.equals("\t") && !a.equals("\n")){
-                       if(verdad==a.matches(TD2)){
+                       if(verdad==a.matches(TD)){
                        lolito=1;
                         }else if(verdad==a.matches(ID) && lolito==1){
                        lolito=2;
@@ -273,7 +272,7 @@ public class Proyecto extends javax.swing.JFrame {
                    }
                    
                     
-                    int aid2=1,aoa2=1,aas2=1,asep2=1,acne2=1,acnpf2=1,adel2=1,atd2=1,cambiar=1;
+                    int aid2=1,aoa2=1,aas2=1,asep2=1,acne2=1,acnpf2=1,adel2=1,atd2=1,cambiar=1,opre2=1,oplb2=1,whle2=1;
                     
                     for (int j = 0; j < guardar.size(); j++) { 
                         if(a.equals(guardar.get(j))){                          
@@ -298,6 +297,14 @@ public class Proyecto extends javax.swing.JFrame {
                                 acnpf2++;
                             }else if(verdad==guardar.get(j).matches(DEL)){
                                 adel2++;
+                            }else if(verdad==guardar.get(j).matches(IGN)){
+                                if(guardar.get(j).equals("while")){
+                                    whle2++;
+                                }else{
+                                    opre2++;
+                                }
+                            }else if(verdad==guardar.get(j).matches(IGNM)){
+                                oplb2++;
                             }else if(verdad==guardar.get(j).matches(ERLXTD)){
                                 atd2++;
                             }else if(verdad==guardar.get(j).matches(ERLXID)){
@@ -331,11 +338,11 @@ public class Proyecto extends javax.swing.JFrame {
                     
                 if(verdad==a.matches(TD)){ 
                     if(cambiar==0){
-                        bw.write("TD"+atd2+" ");
+                        bw.write("TIDA"+atd2+" ");
                     }else{
                         datos[1]=a;
-                        datos[0]="TD"+atd;
-                        bw.write("TD"+atd+" ");                         
+                        datos[0]="TIDA"+atd;
+                        bw.write("TIDA"+atd+" ");                         
                         atd++;
                         guardar.add(datos[1]);
                         model.addRow(datos);
@@ -345,6 +352,24 @@ public class Proyecto extends javax.swing.JFrame {
                     r=0;
                     
                 }else if(verdad==a.matches(ID)){
+                    if(a.length()>8){
+                        datos[0]="ERLXIDEN"+aid;
+                        datos[1]=a;
+                        guardar.add(datos[1]);
+                        model.addRow(datos);
+                        tablavts.setModel(model);
+                        auxiliando++;
+                        datos2[1]=a;
+                        datos2[0]="ERLXIDEN"+aid;   
+                        bw.write("ERLXIDEN"+aid+" ");
+                        datos2[2]=String.valueOf(p);
+                        datos2[3]="Incorrecto el identificador";
+                        model2.addRow(datos2);
+                        tablavts2.setModel(model2);
+                        aid++; 
+                    }else{
+                        
+                    
                     Errorsem f = new Errorsem(guardar3,a);
                     f.vardeclaradas();
                     datos3[1]=f.datos3[1];
@@ -382,22 +407,28 @@ public class Proyecto extends javax.swing.JFrame {
                         k=N.k;
                         
                         if(oa==0 && k==0){
+                          
                             if(guardar6.size()>0){
-                                if(!datos3[1].equals(guardar6.get(0))){                                   
-                                        datos2[1]=a;
-                                        datos2[0]="ERRSEM"+errsem;   
-                                        datos2[2]=String.valueOf(p);
-                                        datos2[3]="Incompatibilidad de tipos";
-                                        model2.addRow(datos2);
-                                        tablavts2.setModel(model2); 
-                                        errsem++;
-                                        guardar4.add(a+p);
-                                        v++;
-                                }
-                            }
-                            if(guardar7.size()>0 | guardar6.size()>0){
-                                if(as==0){  //Metodo para saber si una igualacion es correcta tipo int a=string b
-                                    if(!datos3[1].equals(guardar7.get(0)) || !guardar6.get(0).equals(guardar7.get(0)) ){
+                                if(!datos3[1].equals(guardar6.get(0))){
+                                        if(guardar10.size()>0){
+                                            for (int i = 0; i < guardar10.size(); i++) {
+                                                
+                                                if(p==Integer.parseInt(guardar10.get(i))){
+                                                    unm=1;
+                                                    break;
+                                                }else{
+                                                    unm=0;
+                                                }
+                                            }
+                                            if(unm==0){
+                                                guardar10.add(String.valueOf(p));
+                                            }
+                                        }else{
+                                            guardar10.add(String.valueOf(p));
+                                        }
+                                        
+                                        if(unm!=1){
+                                            System.out.println(p);
                                             datos2[1]=guardar7.get(1);
                                             datos2[0]="ERRSEM"+errsem;   
                                             datos2[2]=String.valueOf(p);
@@ -405,9 +436,44 @@ public class Proyecto extends javax.swing.JFrame {
                                             model2.addRow(datos2);
                                             tablavts2.setModel(model2); 
                                             errsem++;
-                                            as=5;
-                                            guardar4.add(guardar7.get(1)+p);
+                                            guardar4.add(a+p);
                                             v++;
+                                        }
+                                }
+                                
+                            }
+                            if(guardar7.size()>0 | guardar6.size()>0){
+                                
+                                if(as==0){  //Metodo para saber si una igualacion es correcta tipo int a=string b
+                                    if(!datos3[1].equals(guardar7.get(0)) || !guardar6.get(0).equals(guardar7.get(0)) ){
+                                            if(guardar10.size()>0){
+                                                for (int i = 0; i < guardar10.size(); i++) {
+                                                    if(p==Integer.parseInt(guardar10.get(i))){
+                                                        unm=1;
+                                                        break;
+                                                    }else{
+                                                        unm=0;
+                                                    }
+                                                }
+                                                if(unm==0){
+                                                    guardar10.add(String.valueOf(p));
+                                                }
+                                            }else{
+                                                guardar10.add(String.valueOf(p));
+                                            }
+                                            System.out.println(guardar10+" 1");
+                                            if(unm!=1){
+                                                datos2[1]=guardar7.get(1);
+                                                datos2[0]="ERRSEM"+errsem;   
+                                                datos2[2]=String.valueOf(p);
+                                                datos2[3]="Incompatibilidad de tipos";
+                                                model2.addRow(datos2);
+                                                tablavts2.setModel(model2); 
+                                                errsem++;
+                                                as=5;
+                                                guardar4.add(guardar7.get(1)+p);
+                                                v++;
+                                            }
                                         }  
                                 } 
                             }
@@ -416,11 +482,11 @@ public class Proyecto extends javax.swing.JFrame {
                     }
                     
                         if(cambiar==0){
-                               bw.write("ID"+aid2+" ");
+                               bw.write("IDEN"+aid2+" ");
                         }else{
                                 datos[1]=a;
-                                datos[0]="ID"+aid;
-                                bw.write("ID"+aid+" ");
+                                datos[0]="IDEN"+aid;
+                                bw.write("IDEN"+aid+" ");
                                 aid++;
                                 guardar.add(datos[1]);
                                 model.addRow(datos);
@@ -429,7 +495,7 @@ public class Proyecto extends javax.swing.JFrame {
                                 datos[2]="";
                             }
                     datos3[1]=""; guardar6.clear(); r=0;  oa=5;
-                    
+                    }
                 }else if(verdad==a.matches(OA)){                 
                   String j=guardar3.get(guardar3.size()-2);
                   Errorsem o = new Errorsem(guardar3,guardar6,j);
@@ -441,12 +507,20 @@ public class Proyecto extends javax.swing.JFrame {
    
                          if(guardar3.get(i).equals(j)){  
                              if(i>0){
-                                 if(verdad==guardar3.get(i-1).matches(TD2)){
+                                 if(verdad==guardar3.get(i-1).matches(TD)){
                                     guardar6.add(guardar3.get(i-1));    
                                     oa=0;
                                     break;
-                                }else{                              
-                                    oa=5; 
+                                }else{    
+                                    if(guardar3.get(i-1).equals(",")){
+                                        if(verdad==guardar3.get(i-3).matches(TD)){
+                                            System.out.println("hika");                             
+                                            oa=0;
+                                            break;
+                                        }else{
+                                            oa=5; 
+                                        }
+                                    }  
 
                                 }     
                              }else{
@@ -455,11 +529,11 @@ public class Proyecto extends javax.swing.JFrame {
                                
                     }}
                      if(cambiar==0){
-                        bw.write("OA"+aoa2+" ");
+                        bw.write("OPAR"+aoa2+" ");
                     }else{                     
                         datos[1]=a;
-                        datos[0]="OA"+aoa;
-                        bw.write("OA"+aoa+" ");
+                        datos[0]="OPAR"+aoa;
+                        bw.write("OPAR"+aoa+" ");
                         aoa++;
                         guardar.add(datos[1]);
                         model.addRow(datos);
@@ -467,8 +541,7 @@ public class Proyecto extends javax.swing.JFrame {
                         auxiliando++;
                      }  
                      r=0;  
-                }else if(verdad==a.matches(AS)){        
-                    
+                }else if(verdad==a.matches(AS)){
                      String j=guardar3.get(guardar3.size()-2);  
                      Errorsem o = new Errorsem(guardar3,guardar7,j);
                      o.Igualacion();
@@ -476,37 +549,32 @@ public class Proyecto extends javax.swing.JFrame {
                      guardar7=o.guardar7;
  
                      if(cambiar==0){
-                        bw.write("AS"+" ");
+                        bw.write("OPAS"+" ");
                     }else{
                         datos[1]=a;
-                        datos[0]="AS";
-                        bw.write("AS"+" ");
+                        datos[0]="OPAS";
+                        bw.write("OPAS"+" ");
                         guardar.add(datos[1]);
                         model.addRow(datos);
                         tablavts.setModel(model);
                         auxiliando++;
                      }    
                      r=0;  
-                }else if(verdad==a.matches(SEP)){
-                     if(cambiar==0){
-                        bw.write("SEP"+asep2+" ");
-                    }else{
-                        datos[1]=a;
-                        datos[0]="SEP"+asep;
-                        bw.write("SEP"+asep+" ");   
-                        asep++;
-                        guardar.add(datos[1]);
-                        model.addRow(datos);
-                        tablavts.setModel(model);
-                        auxiliando++;
-                     }  
-                     r=0;  
                 }else if(verdad==a.matches(CNE)){
                     
                     if(oa==0){
                           if(guardar6.size()>0){
                               
-                              if(!"int".equals(guardar6.get(0))){                                               
+                              if(!"int".equals(guardar6.get(0))){  
+                                        if(guardar10.size()>0){
+                                                for (int i = 0; i < guardar10.size(); i++) {
+                                                    if(p==Integer.parseInt(guardar10.get(i))){
+                                                        break;
+                                                    }
+                                                }
+                                            }else{
+                                                guardar10.add(String.valueOf(p));
+                                            }
                                         datos2[1]=a;
                                         datos2[0]="ERRSEM"+errsem;   
                                         datos2[2]=String.valueOf(p);
@@ -519,6 +587,15 @@ public class Proyecto extends javax.swing.JFrame {
                               System.out.println("vrgadettt");
                               if(as==0){
                                 if(!"int".equals(guardar7.get(0)) || !guardar6.get(0).equals(guardar7.get(0))){
+                                        if(guardar10.size()>0){
+                                                for (int i = 0; i < guardar10.size(); i++) {
+                                                    if(p==Integer.parseInt(guardar10.get(i))){
+                                                        break;
+                                                    }
+                                                }
+                                            }else{
+                                                guardar10.add(String.valueOf(p));
+                                            }
                                         datos2[1]=guardar7.get(1);
                                         datos2[0]="ERRSEM"+errsem;   
                                         datos2[2]=String.valueOf(p);
@@ -536,11 +613,11 @@ public class Proyecto extends javax.swing.JFrame {
                     guardar6.clear();
                   
                      if(cambiar==0){
-                        bw.write("CNE"+acne2+" ");
+                        bw.write("NUEN"+acne2+" ");
                     }else{
                         datos[1]=a;
-                        datos[0]="CNE"+acne;
-                        bw.write("CNE"+acne+" ");
+                        datos[0]="NUEN"+acne;
+                        bw.write("NUEN"+acne+" ");
                         acne++;
                         guardar.add(datos[1]);
                         model.addRow(datos);
@@ -550,11 +627,11 @@ public class Proyecto extends javax.swing.JFrame {
                      r=0;  
                 }else if(verdad==a.matches(CNPF)){
                      if(cambiar==0){
-                        bw.write("CNE"+acnpf2+" ");
+                        bw.write("NUPD"+acnpf2+" ");
                     }else{
                         datos[1]=a;
-                        datos[0]="CNPF"+acnpf;
-                        bw.write("CNPE"+acnpf+" ");
+                        datos[0]="NUPD"+acnpf;
+                        bw.write("NUPD"+acnpf+" ");
                         acnpf++;
                         guardar.add(datos[1]);
                         model.addRow(datos);
@@ -570,11 +647,11 @@ public class Proyecto extends javax.swing.JFrame {
                         lolito=4;
                     }
                      if(cambiar==0){
-                        bw.write("DEL"+adel2+" ");
+                        bw.write("SEPA"+adel2+" ");
                     }else{
                         datos[1]=a;
-                        datos[0]="DEL"+adel;
-                        bw.write("DEL"+adel+" ");
+                        datos[0]="SEPA"+adel;
+                        bw.write("SEPA"+adel+" ");
                         adel++;
                         guardar.add(datos[1]);
                         model.addRow(datos);
@@ -582,18 +659,56 @@ public class Proyecto extends javax.swing.JFrame {
                         auxiliando++;
                      }  
                      r=0;  
-                }else if(verdad==a.matches(IGN) && r==1){
+                }else if((verdad==a.matches(IGN)|(verdad==a.matches(IGNM)))){
+                    if(a.equals("while") && a.matches(IGN)){
+                        if(cambiar==0){
+                            bw.write("WHLE"+whle2+" ");
+                        }else{
+                            datos[0]="WHLE"+whle;
+                            bw.write("WHLE"+whle+" ");
+                            whle++;
+                            datos[1]=a;
+                            guardar.add(datos[1]);
+                            model.addRow(datos);
+                            tablavts.setModel(model);
+                        }
+                    }else if(a.matches(IGNM)){
+                        System.out.println("contar");
+                        if(cambiar==0){
+                            bw.write("OPLB"+oplb2+" ");
+                        }else{
+                            datos[0]="OPLB"+oplb;
+                            bw.write("OPLB"+oplb+" ");
+                            datos[1]=a;
+                            guardar.add(datos[1]);
+                            model.addRow(datos);
+                            tablavts.setModel(model);
+                            oplb++;
+                        }
+                    }else if(a.matches(IGN)){
+                        if(cambiar==0){
+                            bw.write("OPRE"+opre2+" ");
+                        }else{
+                            datos[0]="OPRE" + opre;
+                            bw.write("OPRE" + opre+" ");
+                            datos[1]=a;
+                            guardar.add(datos[1]);
+                            model.addRow(datos);
+                            tablavts.setModel(model);
+                            opre++;
+                        }
+                    }
                     r=0;
                 }else if(verdad==a.matches(ERLXTD) && r==1) { 
-                   datos[0]="ERLXTD"+atd;
+                   datos[0]="ERLXTIDA"+atd;
                    datos[1]=a;
                    guardar.add(datos[1]);
                    model.addRow(datos);
                    tablavts.setModel(model);
                    auxiliando++;
                    datos2[1]=a;
-                   datos2[0]="ERLXTD"+atd;   
-                   bw.write("ERLXTD"+atd+" ");
+                   datos2[0]="ERLXTIDA"+atd;   
+                   bw.write("ERLXTIDA"+atd+" ");
                    datos2[2]=String.valueOf(p);
                    datos2[3]="Incorrecto el tipo \nde dato";
                    model2.addRow(datos2);
@@ -602,15 +717,15 @@ public class Proyecto extends javax.swing.JFrame {
                    B=8;
                    r=0;
                }else if(verdad==a.matches(ERLXID) && r==1) {
-                   datos[0]="ERLXID"+aid;
+                   datos[0]="ERLXIDEN"+aid;
                    datos[1]=a;
                    guardar.add(datos[1]);
                    model.addRow(datos);
                    tablavts.setModel(model);
                    auxiliando++;
                    datos2[1]=a;
-                   datos2[0]="ERLXID"+aid;   
-                   bw.write("ERLXID"+aid+" ");
+                   datos2[0]="ERLXIDEN"+aid;   
+                   bw.write("ERLXIDEN"+aid+" ");
                    datos2[2]=String.valueOf(p);
                    datos2[3]="Incorrecto el identificador";
                    model2.addRow(datos2);
@@ -618,15 +733,15 @@ public class Proyecto extends javax.swing.JFrame {
                    aid++;                  
                    r=0;
                }else if(verdad==a.matches(ERLXOA) && r==1) {
-                   datos[0]="ERLXOA"+aoa;
+                   datos[0]="ERLXOPAR"+aoa;
                    datos[1]=a;
                    guardar.add(datos[1]);
                    model.addRow(datos);
                    tablavts.setModel(model);
                    auxiliando++;
                    datos2[1]=a;
-                   datos2[0]="ERLXOA"+aoa;      
-                   bw.write("ERLXOA"+aoa+" ");
+                   datos2[0]="ERLXOPAR"+aoa;      
+                   bw.write("ERLXOPAR"+aoa+" ");
                    datos2[2]=String.valueOf(p);
                    datos2[3]="Incorrecto el operador";
                    model2.addRow(datos2);
@@ -634,85 +749,48 @@ public class Proyecto extends javax.swing.JFrame {
                    aoa++; 
                    r=0;
                }else if(verdad==a.matches(ERLXAS) && r==1) {
-                   datos[0]="ERLXAS"+aas;
+                   datos[0]="ERLXOPAS"+aas;
                    datos[1]=a;
                    guardar.add(datos[1]);
                    model.addRow(datos);
                    tablavts.setModel(model);
                    auxiliando++;
                    datos2[1]=a;
-                   datos2[0]="ERLXAS";  
-                   bw.write("ERLXAS"+" ");
+                   datos2[0]="ERLXOPAS";  
+                   bw.write("ERLXOPAS"+" ");
                    datos2[2]=String.valueOf(p);
                    datos2[3]="Incorrecto la asignacion";
                    model2.addRow(datos2);
                    tablavts2.setModel(model2);   
                    r=0;
-               }else if(verdad==a.matches(ERLXSEP) && r==1) {
-                   datos[0]="ERLXSEP"+asep;
-                   datos[1]=a;
-                   guardar.add(datos[1]);
-                   model.addRow(datos);
-                   tablavts.setModel(model);
-                   auxiliando++;
-                   datos2[1]=a;
-                   datos2[0]="ERLXSEP"+asep;      
-                   bw.write("ERLXSEP"+asep+" ");
-                   datos2[2]=String.valueOf(p);
-                   datos2[3]="Incorrecto el misceláneo";
-                   model2.addRow(datos2);
-                   tablavts2.setModel(model2);
-                   asep++;
-                   r=0;
-               }else if(verdad==a.matches(ERLXCNPF) && r==1) {
-                   datos[0]="ERLXCNPF"+acnpf;
-                   datos[1]=a;
-                   guardar.add(datos[1]);
-                   model.addRow(datos);
-                   tablavts.setModel(model);
-                   auxiliando++;
-                   datos2[1]=a;
-                   datos2[0]="ERLXCNPF"+acnpf;       
-                   bw.write("ERLXCNPF"+acnpf+" ");
-                   datos2[2]=String.valueOf(p);
-                   datos2[3]="Incorrecto el punto flotante";
-                   model2.addRow(datos2);
-                   tablavts2.setModel(model2);
-                   acnpf++;             
-                   r=0;
-               }else if(verdad==a.matches(ERLXCNE) && r==1) {
-                   datos[0]="ERLXCNE"+acne;
-                   datos[1]=a;
-                   guardar.add(datos[1]);
-                   model.addRow(datos);
-                   tablavts.setModel(model);
-                   auxiliando++;
-                   datos2[1]=a;
-                   datos2[0]="ERLXCNE"+acne;          
-                   bw.write("ERLXCNE"+acne+" ");
-                   datos2[2]=String.valueOf(p);
-                   datos2[3]="Incorrecta la constante entera";
-                   model2.addRow(datos2);
-                   tablavts2.setModel(model2);
-                   acne++;  
-                   r=0;
                }else if(verdad==a.matches(ERLXDEL) && r==1) {
-                   datos[0]="ERLXDEL"+adel;
+                   datos[0]="ERLXSEPA"+adel;
                    datos[1]=a;
                    guardar.add(datos[1]);
                    model.addRow(datos);
                    tablavts.setModel(model);
                    auxiliando++;
                    datos2[1]=a;
-                   datos2[0]="ERLXDEL"+adel;   
-                   bw.write("ERLXDEL"+adel+" ");
+                   datos2[0]="ERLXSEPA"+adel;   
+                   bw.write("ERLXSEPA"+adel+" ");
                    datos2[2]=String.valueOf(p);
                    datos2[3]="Incorrecto el delimitador";
                    model2.addRow(datos2);
                    tablavts2.setModel(model2);
                    adel++;    
                    r=0;
-               }  
+               }else if(r==1) {
+                   
+                   datos2[1]=a;
+                   datos2[0]="ERLXLEX"+lex;   
+                   bw.write("ERLXLEX" +lex+ " ");
+                   lex++;
+                   datos2[2]=String.valueOf(p);
+                   datos2[3]="Error Lexico";
+                   model2.addRow(datos2);
+                   tablavts2.setModel(model2);   
+                   r=0;
+               }    
                
                
             }else{
@@ -724,886 +802,7 @@ public class Proyecto extends javax.swing.JFrame {
             bw.close();
        }catch(Exception e){
                 System.out.println(e);
-                }
-        
-        ArrayList<String> Paraotro = new ArrayList<String>();
-        ArrayList<String> Paraotro2 = new ArrayList<String>();
-        System.out.println(guardar3);
-        int optim=0;
-        for (int i = 0; i < guardar3.size(); i++) {
-            if(guardar3.get(i).equals("=")){
-                Paraotro.add("#");
-                Paraotro.add(guardar3.get(i-1));
-                for (int j = i; j < guardar3.size(); j++) {
-                    if(guardar3.get(j).equals(";")){
-                        
-                        i=j;
-                        break;
-                    }else{                     
-                            Paraotro.add(guardar3.get(j));    
-                    }
-                }
-                
-            }else if(guardar3.get(i).matches(IGN)){
-                if(guardar3.get(i).equals("while")){
-                    Paraotro.add("#");
-                    Paraotro.add("while");
-                    
-                }else{
-                    Paraotro.add("#");
-                    Paraotro.add(guardar3.get(i-1));
-                    Paraotro.add(guardar3.get(i));
-                    Paraotro.add(guardar3.get(i+1));
-                    i++;
-                }
-            }else if(guardar3.get(i).equals("(")){
-                
-                    Paraotro.add("#");
-                    Paraotro.add("(");
-                             
-            }else if(guardar3.get(i).equals(")")){
-                
-                    Paraotro.add("#");
-                    Paraotro.add(")");
-                             
-            }else if(guardar3.get(i).equals("{")){
-                if(i+1<=guardar3.size()){
-                    Paraotro.add("#");
-                    Paraotro.add("{");
-                }                   
-            }else if(guardar3.get(i).equals("}")){
-                if(i+1<=guardar3.size()){
-                    Paraotro.add("#");
-                    Paraotro.add("}");
-                }                   
-            }else if(guardar3.get(i).matches(IGNM)){
-                    Paraotro.add("#");
-                    Paraotro.add(guardar3.get(i));
-            }
-        }
-        
-        
-        
-        for (int i = 0; i < guardar3.size(); i++) {
-            if(guardar3.get(i).equals("=")){
-                cadenas.add("#");
-                cadenas.add(guardar3.get(i-1));
-                for (int j = i; j < guardar3.size(); j++) {
-                    if(guardar3.get(j).equals(";")){
-                        i=j;
-                        break;
-                    }else{
-                        cadenas.add(guardar3.get(j));
-                    }
-                }
-                
-            }else if(guardar3.get(i).matches(IGN)){
-                if(guardar3.get(i).equals("while")){
-                    cadenas.add("#");
-                    cadenas.add("{");
-                    
-                }else{
-                    cadenas.add("#");
-                    cadenas.add(guardar3.get(i-1));
-                    cadenas.add(guardar3.get(i));
-                    cadenas.add(guardar3.get(i+1));
-                    i++;
-                }
-            }else if(guardar3.get(i).equals("{")){
-                if(i+1<=guardar3.size()){
-                    cadenas.add("#");
-                    cadenas.add("$");
-                }                   
-            }else if(guardar3.get(i).equals("}")){
-                if(i+1<=guardar3.size()){
-                    cadenas.add("#");
-                    cadenas.add("}");
-                }                   
-            }else if(guardar3.get(i).matches(IGNM)){
-                    cadenas.add("#");
-                    cadenas.add(guardar3.get(i));
-            }
-        }
-       
-        System.out.println(cadenas);
-         ArrayList<String> triplo1 = new ArrayList<String>();
-        ArrayList<String> cierres = new ArrayList<String>();
-        StringTokenizer tokens=new StringTokenizer(txt1.getText()," \n\t",true); 
-        int contando=1,contador = 0,relacional=1,paren=1,vacio=1,tr=1,numtr=1,auxiliando=0;
-        ArrayList<String> aritmeticos = new ArrayList<String>();
-        ArrayList<String> txxt = new ArrayList<String>();
-        int opti=0;
-        Parseador f = new Parseador(txt1.getText());;
-        triplo1=cadenas;
-        String OA = "(\\+|\\-|\\*|\\/|\\=)";
-       
-        String txt="";
-        Parseador f3 = new Parseador();
-        try{
-            f3.Haciendo();
-        }catch(Exception e){
-            System.out.println(e);
-        }
-        
-        String IGN = "while|==|!=|<=|>=|<|>|&&|\\|";
-        String REL = "&&|\\|";
-        int entro=0;
-        for (int i = 0; i < triplo1.size(); i++) {
-            int p=0;
-            if(triplo1.get(i).equals("=")){
-                for (int j = i+1; j < triplo1.size(); j++) {
-                    if(triplo1.get(j).equals("#")){
-                        if(triplo1.get(j+1).equals("}")){
-                            if(j+2>=triplo1.size()){
-                                vacio=0; 
-                            }else{
-                                for (int k = j+2; k < triplo1.size(); k++) {
-                                    if(triplo1.get(k).equals("#")){
-                                        if(triplo1.get(k+1).equals("}")){
-                                            if(k+2>=triplo1.size()){                                           
-                                                vacio=0;      
-                                            }else{
-                                                k++;
-                                            }  
-                                        }else{
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                            paren=0;
-                        }
-                        break;
-                    }else{
-                       contador++;
-                        txt+=triplo1.get(j) + " ";
-                        txxt.add(triplo1.get(j));
-                       if(aritmeticos.size()>0){
-                          if((triplo1.get(j).equals("*") | triplo1.get(j).equals("/") | triplo1.get(j).equals("1") | triplo1.get(j).matches(ID)) && opti!=1){
-                              
-                              if(triplo1.get(j).equals("*") | triplo1.get(j).equals("/")){
-                                  opti=1;
-                              }else if(triplo1.get(j).equals("1")){
-                                  opti=1;
-                              }else if(triplo1.get(j).matches(ID)){
-                                  for (int k = 0; k < aritmeticos.size(); k++) {
-                                      k++;
-                                      if(triplo1.get(j).equals(aritmeticos.get(k))){
-                                          if(aritmeticos.get(k-1).equals("1 ")){
-                                              if(opti==1){
-                                                  txxt.remove(txxt.size()-2);
-                                                  txxt.remove(txxt.size()-1);
-                                              }else{
-                                                  opti=1;
-                                              }
-                                          }else if(aritmeticos.get(k-1).equals("0 ")){
-                                              if(opti==2){
-                                                  opti=0;
-                                                  txxt.remove(txxt.size()-2);
-                                                  txxt.remove(txxt.size()-1);
-                                              }else {
-                                                  opti=2;
-                                              }
-                                          }
-                                      }
-                                  }
-                              }
-                          }else if((triplo1.get(j).equals("+") | triplo1.get(j).equals("-") | triplo1.get(j).equals("0") | triplo1.get(j).matches(ID)) && opti !=2){
-                              System.out.println(triplo1.get(j)+"znaahora");
-                              if(triplo1.get(j).equals("+") | triplo1.get(j).equals("-")){
-                                  opti=2;
-                              }else if(triplo1.get(j).equals("0")){
-                                  opti=2;
-                              }else if(triplo1.get(j).matches(ID)){
-                                  for (int k = 0; k < aritmeticos.size(); k++) {
-                                      k++;
-                                      if(triplo1.get(j).equals(aritmeticos.get(k))){
-                                          if(aritmeticos.get(k-1).equals("0 ")){
-                                              if(opti==2){
-                                                  txxt.remove(txxt.size()-2);
-                                                  txxt.remove(txxt.size()-1);
-                                              }else{
-                                                  opti=2;
-                                              }
-                                              
-                                              
-                                          }else if(aritmeticos.get(k-1).equals("1 ")){
-                                              if(opti==1){
-                                                  opti=0;
-                                                  txxt.remove(txxt.size()-2);
-                                                  txxt.remove(txxt.size()-1);
-                                              }else{
-                                                  opti=1;
-                                              }
-                                              
-                                              
-                                          }
-                                      }
-                                  }
-                              }
-                          }else if(opti==1){
-                              opti=0;
-                              if(triplo1.get(j).equals("1") | triplo1.get(j).equals("*") | triplo1.get(j).equals("/")){
-                                txxt.remove(txxt.size()-2);
-                                txxt.remove(txxt.size()-1);
-                              }else if(triplo1.get(j).matches(ID)){
-                                  for (int k = 0; k < aritmeticos.size(); k++) {
-                                      k++;
-                                      if(triplo1.get(j).equals(aritmeticos.get(k))){
-                                          if(aritmeticos.get(k-1).equals("1 ")){
-                                              System.out.println("joder");
-                                              txxt.remove(txxt.size()-2);
-                                              txxt.remove(txxt.size()-1);
-                                          }
-                                      }
-                                  }
-                              }
-                          }else if(opti==2){
-                              opti=0;
-                              if(triplo1.get(j).equals("0") | triplo1.get(j).equals("+") | triplo1.get(j).equals("-")){
-                                txxt.remove(txxt.size()-2);
-                                txxt.remove(txxt.size()-1);
-                              }else if(triplo1.get(j).matches(ID)){
-                                  for (int k = 0; k < aritmeticos.size(); k++) {
-                                      k++;
-                                      if(triplo1.get(j).equals(aritmeticos.get(k))){
-                                          if(aritmeticos.get(k-1).equals("0 ")){
-                                              System.out.println("joder x2");
-                                              txxt.remove(txxt.size()-2);
-                                              txxt.remove(txxt.size()-1);
-                                          }
-                                      }
-                                  }
-                              }
-                          }
-                       }else if((triplo1.get(j).equals("*") | triplo1.get(j).equals("/") | triplo1.get(j).equals("1") | triplo1.get(j).matches(ID)) && opti!=1){
-                              if(triplo1.get(j).equals("*") | triplo1.get(j).equals("/")){
-                                  opti=1;
-                              }else if(triplo1.get(j).equals("1")){
-                                  opti=1;
-                              }
-                        }else if((triplo1.get(j).equals("+") | triplo1.get(j).equals("-") | triplo1.get(j).equals("0") | triplo1.get(j).matches(ID)) && opti !=2){
-                              if(triplo1.get(j).equals("+") | triplo1.get(j).equals("-")){
-                                  opti=2;
-                              }else if(triplo1.get(j).equals("0")){
-                                  opti=2;
-                              }
-                        }else if(opti==1){
-                              opti=0;
-                              if(triplo1.get(j).equals("1") | triplo1.get(j).equals("*") | triplo1.get(j).equals("/")){
-                                txxt.remove(txxt.size()-2);
-                                txxt.remove(txxt.size()-1);
-                              }
-                       }else if(opti==2){
-                              opti=0;
-                              if(triplo1.get(j).equals("0") | triplo1.get(j).equals("+") | triplo1.get(j).equals("-")){
-                                txxt.remove(txxt.size()-2);
-                                txxt.remove(txxt.size()-1);
-                              }
-                       }
-                    }
-                }
-                opti=0;
-                
-                if(aritmeticos.size()==0){
-                    aritmeticos.add(txt);
-                    aritmeticos.add(triplo1.get(i-1));
-                }else{
-                    txt="";
-                    for (int j = 0; j < txxt.size(); j++) {
-                        txt+=txxt.get(j)+" ";
-                    }
-                    aritmeticos.add(txt);
-                    aritmeticos.add(triplo1.get(i-1));
-                }
-                txxt.clear();
-                
-               if(entro==0){
-                    f3 = new Parseador(triplo1.get(i-1),txt,contando);
-                    f3.triplo2();
-                    contando=f3.contando;
-                    txt="";
-               }else{      
-                    f3 = new Parseador(triplo1.get(i-1),txt,contando,contador,paren,relacional,vacio,tr);
-                    f3.triplo2();
-                    contando=f3.contando;
-                    txt="";
-                    if(paren==0){
-                        relacional=1;
-                    }
-               } 
-            }else if(triplo1.get(i).equals("{")) {
-                paren=1;
-            }else if(triplo1.get(i).equals("}")) {
-                cierres.add(String.valueOf(contando));
-                if(paren==0 && i+1<triplo1.size() && relacional==1){
-                    if(triplo1.get(i+1).equals("#") && !triplo1.get(i+2).equals("}")){
-                        cierres.set(cierres.size()-1,String.valueOf(contando+1));
-                    }
-                    
-                }
-            }else if(triplo1.get(i).matches(IGN)){
-                
-               entro=1;
-               relacional=0;
-                if(tr<=1){                    
-                    for (int j = i; j < triplo1.size(); j++) {
-                        if(triplo1.get(j).matches(IGN)){
-                            if(triplo1.get(j).matches(REL)){
-                                tr++;                           
-                            }
-                        }else if(triplo1.get(j).matches(OA)){
-                            break;
-                            }
-                        }   
-                }else{
-                    tr--;
-                }
-                
-                for (int j = i; j < triplo1.size(); j++) {
-                        if(triplo1.get(j).matches(IGN)){
-                            if(triplo1.get(j).matches(REL)){
-                                if(triplo1.get(j).equals("|")){
-                                    entro=2;
-                                    i=j;
-                                    break;
-                                }else if(triplo1.get(j).equals("&&")){
-                                    entro=3;
-                                    i=j;
-                                    break;
-                                }                          
-                           }
-                        }else if(triplo1.get(j).matches(OA)){
-                            break;
-                            }
-                        } 
-                
-                for (int j = i+1; j < triplo1.size(); j++) {
-                    if(triplo1.get(j).equals("#")){
-                        if(triplo1.get(j+1).equals("}")){
-                            if(j+2>=triplo1.size()){
-                                vacio=0;                                    
-                            }
-                        }
-                        break;
-                    }else{
-                        contador++;                        
-                    }
-                }
-                contador+=2;
-                txt=triplo1.get(i-1)+" "+triplo1.get(i)+" "+triplo1.get(i+1);
-                f3 = new Parseador(null,txt,contando,contador,paren,relacional,vacio,tr,entro);
-                f3.triplo2();
-                contando=f3.contando;
-                txt="";     
-                
-            }
-            
-            vacio=1;
-        }
-        
-        
-        /**********************************************************************/
-        contando=1;int contando2=1;contador = 1;relacional=1;paren=1;vacio=1;tr=1;numtr=1;auxiliando=0; int conrel=0; int trs=1,contwh=0;
-        
-        aritmeticos.clear(); txxt.clear(); opti=0;
-        
-        for (int i = 0; i < triplo1.size(); i++) {
-            
-            int p=0;
-            if(triplo1.get(i).equals("=")){
-                for (int j = i+1; j < triplo1.size(); j++) {
-                    
-                    if(triplo1.get(j).equals("#")){
-                        if(triplo1.get(j+1).equals("}")){
-                            if(j+2>=triplo1.size()){
-                                vacio=0;      
-                            }else{
-                                for (int k = j+2; k < triplo1.size(); k++) {
-                                    if(triplo1.get(k).equals("#")){
-                                        if(triplo1.get(k+1).equals("}")){
-                                            if(k+2>=triplo1.size()){                                           
-                                                vacio=0;      
-                                            }else{
-                                                k++;
-                                            }  
-                                        }else{
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-
-                            paren=0;
-                        }
-                        break;
-                    }else{
-                        contador++;
-                        txt+=triplo1.get(j) + " ";
-                        txxt.add(triplo1.get(j));
-                       if(aritmeticos.size()>0){
-                          if((triplo1.get(j).equals("*") | triplo1.get(j).equals("/") | triplo1.get(j).equals("1") | triplo1.get(j).matches(ID)) && opti!=1){
-                              
-                              if(triplo1.get(j).equals("*") | triplo1.get(j).equals("/")){
-                                  opti=1;
-                              }else if(triplo1.get(j).equals("1")){
-                                  opti=1;
-                              }else if(triplo1.get(j).matches(ID)){
-                                  for (int k = 0; k < aritmeticos.size(); k++) {
-                                      k++;
-                                      if(triplo1.get(j).equals(aritmeticos.get(k))){
-                                          if(aritmeticos.get(k-1).equals("1 ")){
-                                              if(opti==1){
-                                                  txxt.remove(txxt.size()-2);
-                                                  txxt.remove(txxt.size()-1);
-                                              }else{
-                                                  opti=1;
-                                              }
-                                          }else if(aritmeticos.get(k-1).equals("0 ")){
-                                              if(opti==2){
-                                                  opti=0;
-                                                  txxt.remove(txxt.size()-2);
-                                                  txxt.remove(txxt.size()-1);
-                                              }else {
-                                                  opti=2;
-                                              }
-                                          }
-                                      }
-                                  }
-                              }
-                          }else if((triplo1.get(j).equals("+") | triplo1.get(j).equals("-") | triplo1.get(j).equals("0") | triplo1.get(j).matches(ID)) && opti !=2){
-                              System.out.println(triplo1.get(j)+"znaahora");
-                              if(triplo1.get(j).equals("+") | triplo1.get(j).equals("-")){
-                                  opti=2;
-                              }else if(triplo1.get(j).equals("0")){
-                                  opti=2;
-                              }else if(triplo1.get(j).matches(ID)){
-                                  for (int k = 0; k < aritmeticos.size(); k++) {
-                                      k++;
-                                      if(triplo1.get(j).equals(aritmeticos.get(k))){
-                                          if(aritmeticos.get(k-1).equals("0 ")){
-                                              if(opti==2){
-                                                  txxt.remove(txxt.size()-2);
-                                                  txxt.remove(txxt.size()-1);
-                                              }else{
-                                                  opti=2;
-                                              }
-                                              
-                                              
-                                          }else if(aritmeticos.get(k-1).equals("1 ")){
-                                              if(opti==1){
-                                                  opti=0;
-                                                  txxt.remove(txxt.size()-2);
-                                                  txxt.remove(txxt.size()-1);
-                                              }else{
-                                                  opti=1;
-                                              }
-                                              
-                                              
-                                          }
-                                      }
-                                  }
-                              }
-                          }else if(opti==1){
-                              opti=0;
-                              if(triplo1.get(j).equals("1") | triplo1.get(j).equals("*") | triplo1.get(j).equals("/")){
-                                txxt.remove(txxt.size()-2);
-                                txxt.remove(txxt.size()-1);
-                              }else if(triplo1.get(j).matches(ID)){
-                                  for (int k = 0; k < aritmeticos.size(); k++) {
-                                      k++;
-                                      if(triplo1.get(j).equals(aritmeticos.get(k))){
-                                          if(aritmeticos.get(k-1).equals("1 ")){
-                                              System.out.println("joder");
-                                              txxt.remove(txxt.size()-2);
-                                              txxt.remove(txxt.size()-1);
-                                          }
-                                      }
-                                  }
-                              }
-                          }else if(opti==2){
-                              opti=0;
-                              if(triplo1.get(j).equals("0") | triplo1.get(j).equals("+") | triplo1.get(j).equals("-")){
-                                txxt.remove(txxt.size()-2);
-                                txxt.remove(txxt.size()-1);
-                              }else if(triplo1.get(j).matches(ID)){
-                                  for (int k = 0; k < aritmeticos.size(); k++) {
-                                      k++;
-                                      if(triplo1.get(j).equals(aritmeticos.get(k))){
-                                          if(aritmeticos.get(k-1).equals("0 ")){
-                                              System.out.println("joder x2");
-                                              txxt.remove(txxt.size()-2);
-                                              txxt.remove(txxt.size()-1);
-                                          }
-                                      }
-                                  }
-                              }
-                          }
-                       }else if((triplo1.get(j).equals("*") | triplo1.get(j).equals("/") | triplo1.get(j).equals("1") | triplo1.get(j).matches(ID)) && opti!=1){
-                              if(triplo1.get(j).equals("*") | triplo1.get(j).equals("/")){
-                                  opti=1;
-                              }else if(triplo1.get(j).equals("1")){
-                                  opti=1;
-                              }
-                        }else if((triplo1.get(j).equals("+") | triplo1.get(j).equals("-") | triplo1.get(j).equals("0") | triplo1.get(j).matches(ID)) && opti !=2){
-                              if(triplo1.get(j).equals("+") | triplo1.get(j).equals("-")){
-                                  opti=2;
-                              }else if(triplo1.get(j).equals("0")){
-                                  opti=2;
-                              }
-                        }else if(opti==1){
-                              opti=0;
-                              if(triplo1.get(j).equals("1") | triplo1.get(j).equals("*") | triplo1.get(j).equals("/")){
-                                txxt.remove(txxt.size()-2);
-                                txxt.remove(txxt.size()-1);
-                              }
-                       }else if(opti==2){
-                              opti=0;
-                              if(triplo1.get(j).equals("0") | triplo1.get(j).equals("+") | triplo1.get(j).equals("-")){
-                                txxt.remove(txxt.size()-2);
-                                txxt.remove(txxt.size()-1);
-                              }
-                       }
-                    }
-                }
-                opti=0;
-                if(aritmeticos.size()==0){
-                    txt="";
-                    for(int j = 0; j < txxt.size(); j++) {
-                        txt+=txxt.get(j)+" ";
-                    }
-                    aritmeticos.add(txt);
-                    aritmeticos.add(triplo1.get(i-1));
-                }else{
-                    txt="";
-                    for (int j = 0; j < txxt.size(); j++) {
-                        txt+=txxt.get(j)+" ";
-                    }
-                    aritmeticos.add(txt);
-                    aritmeticos.add(triplo1.get(i-1));
-                }
-                txxt.clear();
-               if(entro==0){
-                    f3 = new Parseador(triplo1.get(i-1),txt,contando,contando2);
-                    f3.triplo();
-                    contando=f3.contando;
-                    contando2=f3.contando2;
-                    txt="";
-                    
-               }else{
-                    f3 = new Parseador(triplo1.get(i-1),txt,contando,contador,paren,relacional,vacio,auxiliando,cierres,contando2);
-                    f3.triplo();
-                    contando=f3.contando;
-                    contando2=f3.contando2;
-                    txt="";
-                    
-                    
-               } 
-            }else if(triplo1.get(i).equals("{")) {
-                paren=1; auxiliando=contando;
-               
-                contwh++;
-                f3 = new Parseador("while",contando2,contwh);
-                f3.triplo();
-                contando2=f3.contando2;
-            }else if(triplo1.get(i).equals("}")) {
-                if(relacional==0){
-                    relacional=1;
-                    f3 = new Parseador("}",contando2,contwh);
-                    f3.triplo();
-                    contando2=f3.contando2;
-                }
-            }else if(triplo1.get(i).equals("$")) {
-                trs=1;
-            }else if(triplo1.get(i).equals("while")){
-            }else if(triplo1.get(i).matches(IGN)){
-                if(!triplo1.get(i).equals("|") && !triplo1.get(i).equals("&&")){
-                    conrel++;
-                }
-               entro=1;
-               relacional=0;
-                if(tr<=1){                    
-                    for (int j = i; j < triplo1.size(); j++) {
-                        if(triplo1.get(j).matches(IGN)){
-                            if(triplo1.get(j).matches(REL)){
-                                tr++;                           
-                            }
-                        }else if(triplo1.get(j).matches(OA)){
-                            break;
-                            }
-                        }   
-                }else{
-                    tr--;
-                }
-                int auxiliar=0;
-                for (int j = i; j < triplo1.size(); j++) {
-                        if(triplo1.get(j).matches(IGN)){
-                            if(triplo1.get(j).matches(REL)){
-                                if(triplo1.get(j).equals("|")){
-                                    entro=2;
-                                    auxiliar=j;
-                                    break;
-                                }else if(triplo1.get(j).equals("&&")){
-                                    entro=3;
-                                    auxiliar=j;
-                                    break;
-                                }                          
-                           }
-                        }else if(triplo1.get(j).matches(OA)){
-                            break;
-                            }
-                        } 
-                for (int j = i+1; j < triplo1.size(); j++) {
-                    if(triplo1.get(j).equals("#")){
-                        if(triplo1.get(j+1).equals("}")){
-                            if(j+2>=triplo1.size()){
-                                vacio=0;                                    
-                            }
-                        }
-                        break;
-                    }else{
-                        contador++;                        
-                    }
-                }
-                
-                contador+=2;
-                txt=triplo1.get(i-1)+" "+triplo1.get(i)+" "+triplo1.get(i+1);
-                f3 = new Parseador(null,txt,contando,contador,paren,relacional,vacio,tr,entro,cierres,trs,contando2,contwh,conrel);
-                f3.triplo();
-                contando=f3.contando;
-                contando2=f3.contando2;
-                txt="";   
-                trs++;
-                if(entro>1){
-                    i=auxiliar;
-                }
-                
-            }
-            vacio=1;contador=1;
-        }
-        
-        triplo1=Paraotro;
-        aritmeticos.clear(); txxt.clear(); opti=0;
-        IGN = "while|==|!=|<=|>=|<|>|&&|\\|";
-        REL = "&&|\\|";
-        try{
-            if(archivo4.exists()) {
-                archivo4.delete();
-            bwt = new BufferedWriter(new FileWriter(archivo4));
-           
-        }else {
-            bwt = new BufferedWriter(new FileWriter(archivo4));
-           
-            }
-            
-           
-            System.out.println(Paraotro);
-            for (int i = 0; i < triplo1.size(); i++) {
-            if(triplo1.get(i).equals("=")){
-                for (int j = i+1; j < triplo1.size(); j++) {
-                    if(triplo1.get(j).equals("#")){
-                        if(triplo1.get(j+1).equals("}")){
-                            if(j+2>=triplo1.size()){
-                                vacio=0; 
-                            }else{
-                                for (int k = j+2; k < triplo1.size(); k++) {
-                                    if(triplo1.get(k).equals("#")){
-                                        if(triplo1.get(k+1).equals("}")){
-                                            if(k+2>=triplo1.size()){                                           
-                                                vacio=0;      
-                                            }else{
-                                                k++;
-                                            }  
-                                        }else{
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                            paren=0;
-                        }
-                        break;
-                    }else{
-                        txt+=triplo1.get(j) + " ";
-                        txxt.add(triplo1.get(j));
-                       if(aritmeticos.size()>0){
-                          if((triplo1.get(j).equals("*") | triplo1.get(j).equals("/") | triplo1.get(j).equals("1") | triplo1.get(j).matches(ID)) && opti!=1){
-                              
-                              if(triplo1.get(j).equals("*") | triplo1.get(j).equals("/")){
-                                  opti=1;
-                              }else if(triplo1.get(j).equals("1")){
-                                  opti=1;
-                              }else if(triplo1.get(j).matches(ID)){
-                                  for (int k = 0; k < aritmeticos.size(); k++) {
-                                      k++;
-                                      if(triplo1.get(j).equals(aritmeticos.get(k))){
-                                          if(aritmeticos.get(k-1).equals("1 ")){
-                                              if(opti==1){
-                                                  txxt.remove(txxt.size()-2);
-                                                  txxt.remove(txxt.size()-1);
-                                              }else{
-                                                  opti=1;
-                                              }
-                                          }else if(aritmeticos.get(k-1).equals("0 ")){
-                                              if(opti==2){
-                                                  opti=0;
-                                                  txxt.remove(txxt.size()-2);
-                                                  txxt.remove(txxt.size()-1);
-                                              }else {
-                                                  opti=2;
-                                              }
-                                          }
-                                      }
-                                  }
-                              }
-                          }else if((triplo1.get(j).equals("+") | triplo1.get(j).equals("-") | triplo1.get(j).equals("0") | triplo1.get(j).matches(ID)) && opti !=2){
-                              System.out.println(triplo1.get(j)+"znaahora");
-                              if(triplo1.get(j).equals("+") | triplo1.get(j).equals("-")){
-                                  opti=2;
-                              }else if(triplo1.get(j).equals("0")){
-                                  opti=2;
-                              }else if(triplo1.get(j).matches(ID)){
-                                  for (int k = 0; k < aritmeticos.size(); k++) {
-                                      k++;
-                                      if(triplo1.get(j).equals(aritmeticos.get(k))){
-                                          if(aritmeticos.get(k-1).equals("0 ")){
-                                              if(opti==2){
-                                                  txxt.remove(txxt.size()-2);
-                                                  txxt.remove(txxt.size()-1);
-                                              }else{
-                                                  opti=2;
-                                              }
-                                              
-                                              
-                                          }else if(aritmeticos.get(k-1).equals("1 ")){
-                                              if(opti==1){
-                                                  opti=0;
-                                                  txxt.remove(txxt.size()-2);
-                                                  txxt.remove(txxt.size()-1);
-                                              }else{
-                                                  opti=1;
-                                              }
-                                              
-                                              
-                                          }
-                                      }
-                                  }
-                              }
-                          }else if(opti==1){
-                              opti=0;
-                              if(triplo1.get(j).equals("1") | triplo1.get(j).equals("*") | triplo1.get(j).equals("/")){
-                                txxt.remove(txxt.size()-2);
-                                txxt.remove(txxt.size()-1);
-                              }else if(triplo1.get(j).matches(ID)){
-                                  for (int k = 0; k < aritmeticos.size(); k++) {
-                                      k++;
-                                      if(triplo1.get(j).equals(aritmeticos.get(k))){
-                                          if(aritmeticos.get(k-1).equals("1 ")){
-                                              System.out.println("joder");
-                                              txxt.remove(txxt.size()-2);
-                                              txxt.remove(txxt.size()-1);
-                                          }
-                                      }
-                                  }
-                              }
-                          }else if(opti==2){
-                              opti=0;
-                              if(triplo1.get(j).equals("0") | triplo1.get(j).equals("+") | triplo1.get(j).equals("-")){
-                                txxt.remove(txxt.size()-2);
-                                txxt.remove(txxt.size()-1);
-                              }else if(triplo1.get(j).matches(ID)){
-                                  for (int k = 0; k < aritmeticos.size(); k++) {
-                                      k++;
-                                      if(triplo1.get(j).equals(aritmeticos.get(k))){
-                                          if(aritmeticos.get(k-1).equals("0 ")){
-                                              System.out.println("joder x2");
-                                              txxt.remove(txxt.size()-2);
-                                              txxt.remove(txxt.size()-1);
-                                          }
-                                      }
-                                  }
-                              }
-                          }
-                       }else if((triplo1.get(j).equals("*") | triplo1.get(j).equals("/") | triplo1.get(j).equals("1") | triplo1.get(j).matches(ID)) && opti!=1){
-                              if(triplo1.get(j).equals("*") | triplo1.get(j).equals("/")){
-                                  opti=1;
-                              }else if(triplo1.get(j).equals("1")){
-                                  opti=1;
-                              }
-                        }else if((triplo1.get(j).equals("+") | triplo1.get(j).equals("-") | triplo1.get(j).equals("0") | triplo1.get(j).matches(ID)) && opti !=2){
-                              if(triplo1.get(j).equals("+") | triplo1.get(j).equals("-")){
-                                  opti=2;
-                              }else if(triplo1.get(j).equals("0")){
-                                  opti=2;
-                              }
-                        }else if(opti==1){
-                              opti=0;
-                              if(triplo1.get(j).equals("1") | triplo1.get(j).equals("*") | triplo1.get(j).equals("/")){
-                                txxt.remove(txxt.size()-2);
-                                txxt.remove(txxt.size()-1);
-                              }
-                       }else if(opti==2){
-                              opti=0;
-                              if(triplo1.get(j).equals("0") | triplo1.get(j).equals("+") | triplo1.get(j).equals("-")){
-                                txxt.remove(txxt.size()-2);
-                                txxt.remove(txxt.size()-1);
-                              }
-                       }
-                    }
-                }
-                opti=0;
-                if(aritmeticos.size()==0){
-                    txt="";
-                    for(int j = 0; j < txxt.size(); j++) {
-                        txt+=txxt.get(j)+" ";
-                    }
-                    aritmeticos.add(txt);
-                    aritmeticos.add(triplo1.get(i-1));
-                    bwt.write(aritmeticos.get(aritmeticos.size()-1)+" = "+txt + ";" + "\n");
-                }else{
-                    txt="";
-                    for (int j = 0; j < txxt.size(); j++) {
-                        txt+=txxt.get(j)+" ";
-                    }
-                    aritmeticos.add(txt);
-                    aritmeticos.add(triplo1.get(i-1));
-                    bwt.write(aritmeticos.get(aritmeticos.size()-1)+" = "+txt + ";" + "\n");
-                }
-                txxt.clear();
-
-            }else if(triplo1.get(i).equals("{")) {
-               bwt.write(" "+triplo1.get(i)+"\n");
-            }
-            else if(triplo1.get(i).equals("(")) {
-               bwt.write(" "+triplo1.get(i));
-            }else if(triplo1.get(i).equals(")")) {
-               bwt.write(" "+triplo1.get(i));
-            }else if(triplo1.get(i).equals("}")) {
-               bwt.write("\n"+triplo1.get(i)+"\n");
-            }else if(triplo1.get(i).matches(IGN)){
-               if(triplo1.get(i).equals("while")){
-                   bwt.write(triplo1.get(i)+" ");
-               }else if(triplo1.get(i).matches(REL)){
-                  
-                   bwt.write(" "+triplo1.get(i)+" ");
-               }else {
-                   bwt.write(" "+triplo1.get(i-1)+" ");
-                   bwt.write(triplo1.get(i)+" ");
-                   bwt.write(" " +triplo1.get(i+1));
-               }
-               
-            
-            vacio=1;
-            }}
- 
-            
-            bwt.close();
-        }catch(Exception e){
-            
-        }
-        
-        
-        
+                }      
   
     }//GEN-LAST:event_btn1ActionPerformed
 

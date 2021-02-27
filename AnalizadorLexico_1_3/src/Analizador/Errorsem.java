@@ -19,7 +19,7 @@ public class Errorsem {
     String[] datos3 = new String[2];
     Boolean verdad=true;
     String a,j;
-    String TD2 = "(double|string|int|float|char|short|long|boolean)";
+    String TD2 = "(@ABIO7|8num|Hack%)";
     int b,p,h,k=0,u=0,errsem,l,as;
     String[] datos2 = new String[4];
   
@@ -66,7 +66,16 @@ public class Errorsem {
                                datos3[1]=this.guardar3.get(i-1);                               
                                this.b=0;
                                break;
-                            }else{                              
+                            }else{  
+                                if(guardar3.get(i-1).equals(",")){
+                                    if(verdad==this.guardar3.get(i-3).matches(TD2)){
+                                        datos3[1]=this.guardar3.get(i-3);                               
+                                        this.b=0;
+                                        break;
+                                    }else{
+                                        this.b=5; 
+                                    }
+                                }
                                 this.b=5; 
                             }        
                     }
@@ -180,7 +189,18 @@ public class Errorsem {
                                     guardar7.add(guardar3.get(i));
                                     as=0;
                                     break;
-                               }else{                              
+                               }else{
+                                   if(guardar3.get(i-1).equals(",")){
+                                       System.out.println("sasaos");
+                                        if(verdad==this.guardar3.get(i-3).matches(TD2)){
+                                            guardar7.add(guardar3.get(i-3));   
+                                            guardar7.add(guardar3.get(i));                             
+                                            this.as=0;
+                                            break;
+                                        }else{
+                                            this.as=5; 
+                                        }
+                                    } 
                                    as=5; 
                                }
                              }else{
@@ -203,9 +223,21 @@ public class Errorsem {
                                     guardar7.add(guardar3.get(i-1));      
                                     as=0;
                                     break;
-                                }else{                              
-                                    as=5; 
-                                }  
+                                }else{
+                                    System.out.println("fsaso");
+                                   if(guardar3.get(i-1).equals(",")){
+                                        if(verdad==this.guardar3.get(i-3).matches(TD2)){
+                                            System.out.println("hika");
+                                            guardar7.add(guardar3.get(i-3));   
+                                            guardar7.add(guardar3.get(i));                              
+                                            this.as=0;
+                                            break;
+                                        }else{
+                                            this.as=5; 
+                                        }
+                                    } 
+                                   as=5; 
+                               } 
                             }else{
                                 as=5;
                             }
