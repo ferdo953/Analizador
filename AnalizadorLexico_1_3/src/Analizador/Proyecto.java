@@ -62,6 +62,8 @@ public class Proyecto extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablavts = new javax.swing.JTable();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tablavtss = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tablavts2 = new javax.swing.JTable();
@@ -135,21 +137,38 @@ public class Proyecto extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tablavts);
 
+        tablavtss.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
+            new String [] {
+                "Lexema", "Tipo Dato"
+            }
+        ));
+        jScrollPane4.setViewportView(tablavtss);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(34, 34, 34)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 569, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 567, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 476, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 476, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(111, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Tabla de simbolos", jPanel2);
@@ -228,6 +247,7 @@ public class Proyecto extends javax.swing.JFrame {
             DefaultTableModel model3 = new DefaultTableModel();
             model.addColumn("Token");
             model.addColumn("Lexema");
+            
             tablavts.setModel(model);
 
             model2.addColumn("Token de error");
@@ -238,7 +258,7 @@ public class Proyecto extends javax.swing.JFrame {
 
             model3.addColumn("Lexema");
             model3.addColumn("Tipo");
-            /*tablavtss.setModel(model3); */
+            tablavtss.setModel(model3);
 
             String[] datos = new String[3]; //primera tabla
             ArrayList<String> guardar = new ArrayList<String>(); //todos sin los que se repiten
@@ -379,9 +399,10 @@ public class Proyecto extends javax.swing.JFrame {
                                     datos2[2]=String.valueOf(p);
                                     datos2[3]="Variable no definida";
                                     model2.addRow(datos2);
-                                    tablavts2.setModel(model2); */
+                                    tablavts2.setModel(model2);
+                                    errsem++;*/
                                     guardar4.add(a+p);
-                                    h++;errsem++;
+                                    h++;
                                 }else if(b==0){
                                     Errorsem m = new Errorsem(guardar2,guardar5,a,l,b);
                                     m.Declarados();
@@ -389,11 +410,11 @@ public class Proyecto extends javax.swing.JFrame {
 
                                     if(u==0){
 
-                                       /* datos3[0]=a;
+                                        datos3[0]=a;                               
                                         model3.addRow(datos3);
                                         tablavtss.setModel(model3);
-                                        */guardar5.add(a);
-                                        /*l++; */
+                                        guardar5.add(a);
+                                        l++;
                                     }
 
                                     Errorsem N = new Errorsem(guardar2,guardar4,guardar7,p,a,v,b);
@@ -418,6 +439,7 @@ public class Proyecto extends javax.swing.JFrame {
                                                         guardar10.add(String.valueOf(p));
                                                     }
                                                 }else{
+                                                    unm=0;
                                                     guardar10.add(String.valueOf(p));
                                                 }
 
@@ -437,7 +459,7 @@ public class Proyecto extends javax.swing.JFrame {
 
                                         }
                                         if(guardar7.size()>0 | guardar6.size()>0){
-
+                                            System.out.println(guardar.get(1)+"digimon");
                                             if(as==0){  //Metodo para saber si una igualacion es correcta tipo int a=string b
                                                 if(!datos3[1].equals(guardar7.get(0)) || !guardar6.get(0).equals(guardar7.get(0)) ){
                                                     if(guardar10.size()>0){
@@ -450,9 +472,11 @@ public class Proyecto extends javax.swing.JFrame {
                                                             }
                                                         }
                                                         if(unm==0){
+                                                            
                                                             guardar10.add(String.valueOf(p));
                                                         }
                                                     }else{
+                                                        unm=0;
                                                         guardar10.add(String.valueOf(p));
                                                     }
                                                     System.out.println(guardar10+" 1");
@@ -506,7 +530,6 @@ public class Proyecto extends javax.swing.JFrame {
                                             oa=0;
                                             break;
                                         }else{
-                                            System.out.println(guardar3.get(i));
                                             if(guardar3.get(i-1).equals(",")){
                                                 if(verdad==guardar3.get(i-3).matches(TD)){
                                                     oa=0;
@@ -515,18 +538,36 @@ public class Proyecto extends javax.swing.JFrame {
                                                     oa=5;
                                                 }
                                             }else{
-                                                    oa=5;
-                                                    datos2[1]=guardar7.get(1);
-                                                    datos2[0]="ERRSEM"+errsem;
-                                                    datos2[2]=String.valueOf(p);
-                                                    datos2[3]="Incompatibilidad de tipos";
-                                                    model2.addRow(datos2);
-                                                    tablavts2.setModel(model2);
-                                                    errsem++;
-                                                    as=5;
-                                                    guardar4.add(guardar7.get(1)+p);
-                                                    v++;
+                                                  if(guardar10.size()>0){
+                                                    for (int n = 0; n < guardar10.size(); n++) {
+
+                                                        if(p==Integer.parseInt(guardar10.get(n))){
+                                                            unm=1;
+                                                            break;
+                                                        }else{
+                                                            unm=0;
+                                                        }
+                                                    }
+                                                    if(unm==0){
+                                                        guardar10.add(String.valueOf(p));
+                                                    }
+                                                }else{
+                                                      unm=0;
                                                     guardar10.add(String.valueOf(p));
+                                                }
+                                                  if(unm!=1){
+                                                        oa=5;
+                                                        datos2[1]=guardar7.get(1);
+                                                        datos2[0]="ERRSEM"+errsem;
+                                                        datos2[2]=String.valueOf(p);
+                                                        datos2[3]="Incompatibilidad de tipos";
+                                                        model2.addRow(datos2);
+                                                        tablavts2.setModel(model2);
+                                                        errsem++;
+                                                        guardar4.add(guardar7.get(1)+p);
+                                                        guardar10.add(String.valueOf(p));
+                                                  }
+                                                    
                                                 }
 
                                         }
@@ -554,7 +595,23 @@ public class Proyecto extends javax.swing.JFrame {
                                 o.Igualacion();
                                 as=o.as;
                                 guardar7=o.guardar7;
-
+                                System.out.println(guardar7 + "labanana");
+                                
+                                if(guardar7.size()>0){
+                                    if(guardar7.get(0).equals("nada")){
+                                        datos2[1]=guardar7.get(1);
+                                        datos2[0]="ERRSEM"+errsem;
+                                        datos2[2]=String.valueOf(p);
+                                        datos2[3]="Incompatibilidad de tipos";
+                                        model2.addRow(datos2);
+                                        tablavts2.setModel(model2);
+                                        errsem++;
+                                        guardar4.add(guardar7.get(1)+p);
+                                        guardar10.add(String.valueOf(p));
+                                        guardar7.clear();
+                                    }
+                                }
+                                
                                 if(cambiar==0){
                                     bw.write("OAS"+" ");
                                 }else{
@@ -788,8 +845,8 @@ public class Proyecto extends javax.swing.JFrame {
                             }else if(r==1) {
 
                                 datos2[1]=a;
-                                datos2[0]="ERLXLEX"+lex;
-                                bw.write("ERLXLEX" +lex+ " ");
+                                datos2[0]="ERLXLEXICO"+lex;
+                                bw.write("ERLXLEXICO" +lex+ " ");
                                 lex++;
                                 datos2[2]=String.valueOf(p);
                                 datos2[3]="Error Lexico";
@@ -854,9 +911,11 @@ public class Proyecto extends javax.swing.JFrame {
     javax.swing.JScrollPane jScrollPane1;
     javax.swing.JScrollPane jScrollPane2;
     javax.swing.JScrollPane jScrollPane3;
+    javax.swing.JScrollPane jScrollPane4;
     javax.swing.JTabbedPane jTabbedPane1;
     javax.swing.JTable tablavts;
     javax.swing.JTable tablavts2;
+    javax.swing.JTable tablavtss;
     javax.swing.JTextArea txt1;
     // End of variables declaration//GEN-END:variables
 }

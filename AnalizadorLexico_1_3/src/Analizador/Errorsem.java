@@ -191,16 +191,16 @@ public class Errorsem {
                                     break;
                                }else{
                                    if(guardar3.get(i-1).equals(",")){
-                                       System.out.println("sasaos");
                                         if(verdad==this.guardar3.get(i-3).matches(TD2)){
-                                            guardar7.add(guardar3.get(i-3));   
-                                            guardar7.add(guardar3.get(i));                             
-                                            this.as=0;
-                                            break;
+                                            
                                         }else{
                                             this.as=5; 
                                         }
-                                    } 
+                                    }else{
+                                            guardar7.add("nada");   
+                                            guardar7.add(guardar3.get(i)); 
+                                            break;
+                                   } 
                                    as=5; 
                                }
                              }else{
@@ -224,10 +224,8 @@ public class Errorsem {
                                     as=0;
                                     break;
                                 }else{
-                                    System.out.println("fsaso");
                                    if(guardar3.get(i-1).equals(",")){
                                         if(verdad==this.guardar3.get(i-3).matches(TD2)){
-                                            System.out.println("hika");
                                             guardar7.add(guardar3.get(i-3));   
                                             guardar7.add(guardar3.get(i));                              
                                             this.as=0;
